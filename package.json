@@ -1,0 +1,23 @@
+{
+  "name": "fablr-api",
+  "version": "0.0.1",
+  "description": "A REST API for collaborative decision-based writing.",
+  "main": "app.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/kryptx/fablr-api.git"
+  },
+  "dependencies": {
+    "hapi": "1.8.x",
+    "mongodb": "~1.3.10",
+    "winston": "~0.7.2"
+  },
+  "author": "Jason Burbage <kryptx@gmail.com>",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/kryptx/fablr-api/issues"
+  }
+}
