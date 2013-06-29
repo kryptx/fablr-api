@@ -4,7 +4,7 @@ var Hapi = require('hapi'),
 	routes = require('./routes.js').routes,
 	mongo = require('./lib/mongo.js');
 
-winston.loggers.add('global', {
+winston.loggers.add('default', {
 	console: {
 		level: 'debug',
 		timestamp: true
@@ -12,6 +12,13 @@ winston.loggers.add('global', {
 });
 
 mongo.init();
+var yarOptions = {
+	cookieOptions: {
+		password: 'password',
+		isSecure: false
+	}
+};
+server.pack.allow({ ext: true }).require('yar', yarOptions, function (err) { });
 server.route(routes);
 
 // Start the server
