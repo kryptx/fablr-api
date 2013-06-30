@@ -9,44 +9,41 @@ module.exports = function CrudController() {
 	this.storySvc = new ObjectSvc('story');
 	// this.authorSvc = new ObjectSvc('author');
 
+	this.getCallback = function(err, object, request) {
+		if(err) request.reply(Hapi.error.internal("Internal server error"));
+		else if(!object) request.reply(Hapi.error.notFound());
+		else request.reply(object);
+	};
+
+	this.createCallback = function(err, object, request, route) {
+		if(err) {
+			request.reply(Hapi.error.internal("Internal server error"));
+		}
+		else request.reply(Hapi.response.Generic.created(route + '/' + object._id));
+	};
+
 	this.getPage = function(request) {
 		self.pageSvc.getById(request.params.id, function(err, page) {
-			if(err) request.reply(Hapi.error.Internal("Internal server error"));
-			else if(!page) request.reply(Hapi.error.notFound());
-			else request.reply(page);
+			self.getCallback(err, page, request);
 		});
 	};
 
 	this.createPage = function(request) {
-
 		// TODO: validate that this user is allowed to insert this page into this story
 		self.pageSvc.create(request.payload, function(err, pageObj) {
-			if(err) {
-				request.reply(Hapi.error.Internal("Internal server error"));
-			}
-
-			request.reply(Hapi.response.Generic.created('/page/' + pageObj._id));
+			self.createCallback(err, pageObj, request, '/page');
 		});
 	};
 
 	this.getStory = function(request) {
-
 		self.storySvc.getById(request.params.id, function(err, story) {
-			if(err) request.reply(Hapi.error.Internal("Internal server error"));
-			else if(!story) request.reply(Hapi.error.notFound());
-			else request.reply(story);
+			self.getCallback(err, story, request);
 		});
 	};
 
 	this.createStory = function(request) {
-
 		self.storySvc.create(request.payload, function(err, storyObj) {
-			if(err) {
-				request.reply(Hapi.error.Internal("Internal server error"));
-			}
-
-			request.reply(Hapi.response.Generic.created('/story/' + storyObj._id));
+			self.createCallback(err, storyObj, request, '/story');
 		});
-
 	};
 };
