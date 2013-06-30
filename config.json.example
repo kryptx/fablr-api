@@ -4,6 +4,7 @@
 		"connectionString": "mongodb://user:secret@127.0.0.1:27017/fablr"
 	},
 	"auth": {
+		"cookiePassword": "an-encryption-password-for-cookies",
 		"google": {
 			"clientId": "your-client-id",
 			"clientSecret": "your-client-secret",
