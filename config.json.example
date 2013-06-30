@@ -1,5 +1,10 @@
 {
 	"uiUrl": "http://www.fablr.com/",
+	"hapi": {
+		"cors": {
+			"origin": ["www.fablr.com", "api.fablr.com"]
+		}
+	},
 	"db": {
 		"connectionString": "mongodb://user:secret@127.0.0.1:27017/fablr"
 	},
@@ -10,5 +15,6 @@
 			"clientSecret": "your-client-secret",
 			"redirectUri": "http://api.fablr.com:8080/authCallback"
 		}
-	}
+	},
+    "logLevel": "debug"
 }

@@ -1,15 +1,13 @@
-var Hapi = require('hapi'),
+var config = require('./config.json'),
 	winston = require('winston'),
-	server = Hapi.createServer(8080),
-	routes = require('./routes.js').routes,
+	Hapi = require('hapi'),
+	server = Hapi.createServer(8080, config.hapi),
 	mongo = require('./lib/mongo.js'),
-	ObjectSvc = require('./lib/ObjectSvc.js'),
-	config = require('./config.json');
+	ObjectSvc = require('./lib/ObjectSvc.js');
 
 winston.loggers.add('default', {
 	console: {
-		level: 'debug',
-		timestamp: true
+		level: config.logLevel
 	}
 });
 
@@ -21,10 +19,9 @@ server.auth('default', {
 	defaultMode: 'try'
 });
 
-server.route(routes);
-
 mongo.init(function(db) {
 	ObjectSvc.db = db;
+	server.route(require('./routes.js').routes);
 	server.start(function() {
 		winston.info("Server started at " + server.info.uri);
 	});

@@ -59,8 +59,7 @@ exports.authCallback = function(hapiRequest) {
 	var stateParts = decodeURIComponent(hapiRequest.query.state).split('|');
 
 	logger.debug("State parts: " + stateParts);
-
-	logger.debug("Module state tokens: " + stateTokens);
+	logger.debug("Module state tokens: " + stateTokens.length);
 	// if they match, exchange the code for a token
 	if(stateTokens[stateParts[0]]) {
 
@@ -80,7 +79,7 @@ exports.authCallback = function(hapiRequest) {
 			json: true
 		}, function(err, res, body) {
 
-			logger.debug("Decoding base64 JWT: " + body.id_token);
+			logger.debug("Decoding JWT from google");
 			var jwt = jws.decode(body.id_token);
 			var id_payload = JSON.parse(jwt.payload);
 			logger.debug("User e-mail address: " + id_payload.email);
@@ -121,5 +120,8 @@ exports.authCallback = function(hapiRequest) {
 
 		});
 
+	} else {
+		logger.warn("Invalid or missing state token");
+		return hapiRequest.reply(Hapi.error.internal("Internal server error"));
 	}
 };
