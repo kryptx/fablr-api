@@ -1,8 +1,10 @@
 var config = require('../config.json'),
 	logger = require('winston').loggers.get('default'),
 	request = require('request'),
+	crypto = require('crypto'),
 	jws = require('jws'),
-	Hapi = require('hapi');
+	Hapi = require('hapi'),
+	ObjectSvc = require('../lib/ObjectSvc.js');
 
 function randomString(length, chars) {
 	var result = '';
@@ -11,42 +13,61 @@ function randomString(length, chars) {
 }
 
 // TODO: all kinds of error handling in this controller
+// TODO: break this down into testable bits
 
-exports.begin = function() {
+function doRedirect(request, destination) {
+	// redirect them to where they were
+	if(destination) {
+		request.reply.redirect(destination);
+	} else {
+		request.reply.redirect(config.uiUrl);
+	}
+}
+
+var stateTokens = {};
+
+exports.begin = function(request) {
 	logger.debug("Attempting to authenticate user");
-	if(this.params.type === 'google') {
+	if(request.params.type === 'google') {
 		logger.debug("Constructing google URL");
 		var stateToken = randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 		logger.debug("State token: " + stateToken);
-		this.session.set('stateToken', stateToken);
+		stateTokens[stateToken] = setTimeout(function() {
+			delete stateTokens[stateToken];
+		}, 300000);
+		logger.debug(stateTokens);
+
 		var url = 'https://accounts.google.com/o/oauth2/auth' +
 					'?client_id=' + config.auth.google.clientId +
 					'&response_type=code' +
 					'&scope=openid%20email' +
 					'&redirect_uri=' + encodeURIComponent(config.auth.google.redirectUri) +
-					'&state=' + stateToken + '%7C' + encodeURIComponent(this.query.returnTo || '');
+					'&state=' + stateToken + '%7C' + encodeURIComponent(request.query.returnTo || '');
 
 		logger.debug("Redirecting to google");
-		return this.reply.redirect(url).message("Redirecting to google for authentication...").permanent(true);
+		return request.reply.redirect(url).message("Redirecting to google for authentication...").permanent(true);
 	}
 
-	return this.reply(Hapi.Error.Internal("Invalid URL."));
+	return request.reply(Hapi.Error.Internal("Invalid URL."));
 };
 
 exports.authCallback = function(hapiRequest) {
 
-	// compare the state token in the url to that in the session
+	// compare the state token in the url to those granted by the app
 	logger.debug("Received auth callback");
 
 	var stateParts = decodeURIComponent(hapiRequest.query.state).split('|');
 
 	logger.debug("State parts: " + stateParts);
-	logger.debug("State token from session: " + hapiRequest.session.get('stateToken'));
 
+	logger.debug("Module state tokens: " + stateTokens);
 	// if they match, exchange the code for a token
-	if(stateParts[0] === hapiRequest.session.get('stateToken')) {
+	if(stateTokens[stateParts[0]]) {
 
-		logger.debug("State token matches, retrieving id token");
+		clearTimeout(stateTokens[stateParts[0]]);
+		delete stateTokens[stateParts[0]];
+
+		logger.debug("State token validated, retrieving id token");
 		// use the token to get the user's e-mail from google
 		request.post('https://accounts.google.com/o/oauth2/token', {
 			form: {
@@ -58,20 +79,45 @@ exports.authCallback = function(hapiRequest) {
 			},
 			json: true
 		}, function(err, res, body) {
-			// put their e-mail address in the session; this will signify that they are "logged in"
+
 			logger.debug("Decoding base64 JWT: " + body.id_token);
 			var jwt = jws.decode(body.id_token);
 			var id_payload = JSON.parse(jwt.payload);
 			logger.debug("User e-mail address: " + id_payload.email);
-			hapiRequest.session.set('email', id_payload.email);
+			var authorSvc = new ObjectSvc('author');
+			authorSvc.findByField('email', id_payload.email, function(err, authorsArray) {
+				var nowTime = new Date().getTime();
+				if(authorsArray.length === 0) {
+					// create an author
+					authorSvc.create({
+						email: id_payload.email,
+						penName: id_payload.email,
+						upvotes: 0,
+						downvotes: 0,
+						created: nowTime,
+						lastLogin: nowTime
+					}, function(err, author) {
+						if(err) {
+							logger.error("Failed to create author: " + id_payload.email);
+							return hapiRequest.reply(Hapi.error.internal("Internal server error"));
+						} else {
+							// set the author in the session
+							logger.info("New author created: " + author.email);
+							hapiRequest.auth.session.set(author);
+							doRedirect(hapiRequest, stateParts[1]);
+						}
+					});
+				} else if (authorsArray.length === 1) {
+					// set the author in the session
+					logger.debug("Author logged in: " + authorsArray[0].email);
+					hapiRequest.auth.session.set(authorsArray[0]);
+					doRedirect(hapiRequest, stateParts[1]);
+				} else {
+					logger.error("Multiple authors found with e-mail address " + id_payload.email);
+					return hapiRequest.reply(Hapi.error.internal("Internal server error"));
+				}
+			});
 
-			// TODO: create an author if it doesn't yet exist
-			// redirect them to where they were
-			if(stateParts[1]) {
-				hapiRequest.reply.redirect(stateParts[1]);
-			} else {
-				hapiRequest.reply.redirect(config.uiUrl);
-			}
 		});
 
 	}

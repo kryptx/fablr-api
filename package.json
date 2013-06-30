@@ -11,16 +11,15 @@
     "url": "ssh://git@github.com/kryptx/fablr-api.git"
   },
   "dependencies": {
-  "hapi": "~1.8.2",
-  "jws": "~0.2.2",
-  "mongodb": "~1.3.10",
-  "request": "~2.21.0",
-  "winston": "~0.7.2",
-	"yar": "~0.3.0"
+    "hapi": "~1.8.2",
+    "jws": "~0.2.2",
+    "mongodb": "~1.3.10",
+    "request": "~2.21.0",
+    "winston": "~0.7.2"
   },
   "devDependencies": {
     "mocha": "~1.11.0",
-	"sinon": "~1.7.3"
+    "sinon": "~1.7.3"
   },
   "author": "Jason Burbage <kryptx@gmail.com>",
   "license": "BSD",

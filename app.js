@@ -3,7 +3,8 @@ var Hapi = require('hapi'),
 	server = Hapi.createServer(8080),
 	routes = require('./routes.js').routes,
 	mongo = require('./lib/mongo.js'),
-	ObjectSvc = require('./lib/ObjectSvc.js');
+	ObjectSvc = require('./lib/ObjectSvc.js'),
+	config = require('./config.json');
 
 winston.loggers.add('default', {
 	console: {
@@ -12,15 +13,14 @@ winston.loggers.add('default', {
 	}
 });
 
-var yarOptions = {
-	cookieOptions: {
-		password: 'password',
-		isSecure: false
-	}
-};
-server.pack.allow({ ext: true }).require('yar', yarOptions, function (err) { });
-server.route(routes);
+server.auth('default', {
+	scheme: 'cookie',
+	password: config.auth.cookiePassword,
+	cookie: 'sid',
+	isSecure: false
+});
 
+server.route(routes);
 
 mongo.init(function(db) {
 	ObjectSvc.db = db;

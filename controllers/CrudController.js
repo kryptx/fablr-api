@@ -23,7 +23,7 @@ module.exports = function CrudController() {
 	};
 
 	this.getPage = function(request) {
-		self.pageSvc.getById(request.params.id, function(err, page) {
+		self.pageSvc.findById(request.params.id, function(err, page) {
 			self.getCallback(err, page, request);
 		});
 	};
@@ -36,7 +36,7 @@ module.exports = function CrudController() {
 	};
 
 	this.getStory = function(request) {
-		self.storySvc.getById(request.params.id, function(err, story) {
+		self.storySvc.findById(request.params.id, function(err, story) {
 			self.getCallback(err, story, request);
 		});
 	};
@@ -48,7 +48,7 @@ module.exports = function CrudController() {
 	};
 
 	this.getAuthor = function(request) {
-		self.authorSvc.getById(request.params.id, function(err, author) {
+		self.authorSvc.findById(request.params.id, function(err, author) {
 			self.getCallback(err, author, request);
 		});
 	};

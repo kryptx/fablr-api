@@ -1,5 +1,13 @@
 {
+	"uiUrl": "http://www.fablr.com/",
 	"db": {
-		"connectionString": "mongodb://fablr:secret@127.0.0.1:27017/fablr"
+		"connectionString": "mongodb://user:secret@127.0.0.1:27017/fablr"
+	},
+	"auth": {
+		"google": {
+			"clientId": "your-client-id",
+			"clientSecret": "your-client-secret",
+			"redirectUri": "http://api.fablr.com:8080/authCallback"
+		}
 	}
 }

@@ -12,18 +12,18 @@ describe('CrudController', function() {
 	});
 
 	describe('getPage', function() {
-		it('should invoke pageSvc.getById with the provided argument', function() {
+		it('should invoke pageSvc.findById with the provided argument', function() {
 			var id = 'abc123';
-			pageMock.expects("getById").once().withArgs(id);
+			pageMock.expects("findById").once().withArgs(id);
 			controller.getPage({ params: { id: id } });
 			pageMock.verify();
 		});
 	});
 
 	describe('getStory', function() {
-		it('should invoke storySvc.getById with the provided argument', function() {
+		it('should invoke storySvc.findById with the provided argument', function() {
 			var id = 'def456';
-			storyMock.expects("getById").once().withArgs(id);
+			storyMock.expects("findById").once().withArgs(id);
 			controller.getStory({ params: { id: id } });
 			storyMock.verify();
 		});
