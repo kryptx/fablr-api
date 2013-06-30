@@ -16,6 +16,7 @@ server.auth('default', {
 	password: config.auth.cookiePassword,
 	cookie: 'sid',
 	isSecure: false,
+	isHttpOnly: false,
 	defaultMode: 'try'
 });
 
