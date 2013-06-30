@@ -1,2 +1,4 @@
 test:
-	echo "No tests at this time."
+	./node_modules/mocha/bin/mocha --recursive test
+
+.PHONY: test

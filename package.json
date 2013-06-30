@@ -16,8 +16,11 @@
     "yar": "~0.3.0",
     "winston": "~0.7.2",
     "request": "~2.21.0",
-    "base64url": "0.0.4",
     "jws": "~0.2.2"
+  },
+  "devDependencies": {
+    "mocha": "~1.11.0",
+	"sinon": "~1.7.3"
   },
   "author": "Jason Burbage <kryptx@gmail.com>",
   "license": "BSD",

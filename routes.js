@@ -1,5 +1,5 @@
-var PageController = require('./controllers/PageController'),
-	StoryController = require('./controllers/StoryController'),
+var CrudController = require('./controllers/CrudController'),
+	crudController = new CrudController(),
 	AuthenticationController = require('./controllers/AuthenticationController'),
 	Hapi = require('hapi'),
 	validator = require('./lib/validator.js');
@@ -7,23 +7,23 @@ var PageController = require('./controllers/PageController'),
 exports.routes = [
 
 	{ method: 'GET', path: '/page/{id}', config: {
-		handler: PageController.getPage,
+		handler: crudController.getPage,
 		validate: { path: { id: validator.mongoid.required() } } }
 	},
 
 	{ method: 'PUT', path: '/page', config: {
-		handler: PageController.createPage,
+		handler: crudController.createPage,
 		payload: 'parse',
 		validate: { payload: validator.page } }
 	},
 
 	{ method: 'GET', path: '/story/{id}', config: {
-		handler: StoryController.getStory,
+		handler: crudController.getStory,
 		validate: { path: { id: validator.mongoid.required() } } }
 	},
 
 	{ method: 'PUT', path: '/story', config: {
-		handler: StoryController.createStory,
+		handler: crudController.createStory,
 		payload: 'parse',
 		validate: { payload: validator.story } }
 	},
