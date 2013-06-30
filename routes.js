@@ -22,6 +22,11 @@ exports.routes = [
 		validate: { path: { id: validator.mongoid.required() } } }
 	},
 
+	{ method: 'GET', path: '/author/{id}', config: {
+		handler: crudController.getAuthor,
+		validate: { path: { id: validator.mongoid.required() } } }
+	},
+
 	{ method: 'PUT', path: '/story', config: {
 		handler: crudController.createStory,
 		payload: 'parse',
@@ -31,7 +36,7 @@ exports.routes = [
 	{ method: 'GET', path: '/auth/{type}', config: {
 		handler: AuthenticationController.begin,
 		validate: {
-			path: { type: Hapi.types.String().valid(['google']) },
+			path: { type: Hapi.types.String().valid(['google']).required() },
 			query: { returnTo: Hapi.types.String().regex(/^http/) } } }
 	},
 

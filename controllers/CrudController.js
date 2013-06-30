@@ -7,7 +7,7 @@ module.exports = function CrudController() {
 	var self = this;
 	this.pageSvc = new ObjectSvc('page');
 	this.storySvc = new ObjectSvc('story');
-	// this.authorSvc = new ObjectSvc('author');
+	this.authorSvc = new ObjectSvc('author');
 
 	this.getCallback = function(err, object, request) {
 		if(err) request.reply(Hapi.error.internal("Internal server error"));
@@ -44,6 +44,12 @@ module.exports = function CrudController() {
 	this.createStory = function(request) {
 		self.storySvc.create(request.payload, function(err, storyObj) {
 			self.createCallback(err, storyObj, request, '/story');
+		});
+	};
+
+	this.getAuthor = function(request) {
+		self.authorSvc.getById(request.params.id, function(err, author) {
+			self.getCallback(err, author, request);
 		});
 	};
 };
