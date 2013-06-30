@@ -1,4 +1,4 @@
-var config = require('./config.json'),
+var config = require('./config/config.js'),
 	winston = require('winston'),
 	Hapi = require('hapi'),
 	server = Hapi.createServer(8080, config.hapi),
@@ -19,7 +19,7 @@ server.auth('default', {
 	defaultMode: 'try'
 });
 
-mongo.init(function(db) {
+mongo.init(config.db.connectionString, function(db) {
 	ObjectSvc.db = db;
 	server.route(require('./routes.js').routes);
 	server.start(function() {

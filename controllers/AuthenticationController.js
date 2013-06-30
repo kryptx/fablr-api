@@ -1,4 +1,4 @@
-var config = require('../config.json'),
+var config = require('../config/config.js'),
 	logger = require('winston').loggers.get('default'),
 	request = require('request'),
 	crypto = require('crypto'),
