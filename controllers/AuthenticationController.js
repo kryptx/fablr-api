@@ -109,6 +109,7 @@ exports.authCallback = function(hapiRequest) {
 					});
 				} else if (authorsArray.length === 1) {
 					// set the author in the session
+					// TODO: set lastLogin
 					logger.debug("Author logged in: " + authorsArray[0].email);
 					hapiRequest.auth.session.set(authorsArray[0]);
 					doRedirect(hapiRequest, stateParts[1]);
