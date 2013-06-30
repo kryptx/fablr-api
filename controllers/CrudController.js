@@ -48,8 +48,16 @@ module.exports = function CrudController() {
 	};
 
 	this.getAuthor = function(request) {
-		self.authorSvc.findById(request.params.id, function(err, author) {
-			self.getCallback(err, author, request);
-		});
+		if(request.params.id) {
+			self.authorSvc.findById(request.params.id, function(err, author) {
+				self.getCallback(err, author, request);
+			});
+		} else {
+			if(request.auth.isAuthenticated) {
+				request.reply(request.auth.credentials);
+			} else {
+				request.reply(Hapi.error.notFound());
+			}
+		}
 	};
 };

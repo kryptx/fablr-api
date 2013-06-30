@@ -9,6 +9,7 @@ describe('CrudController', function() {
 		controller = new CrudController();
 		pageMock = sinon.mock(controller.pageSvc);
 		storyMock = sinon.mock(controller.storySvc);
+		authorMock = sinon.mock(controller.authorSvc);
 	});
 
 	describe('getPage', function() {
@@ -27,6 +28,31 @@ describe('CrudController', function() {
 			controller.getStory({ params: { id: id } });
 			storyMock.verify();
 		});
+	});
+
+	describe('getAuthor', function() {
+		it('should invoke authorSvc.findById with the provided argument', function() {
+			var id = 'def456';
+			authorMock.expects("findById").once().withArgs(id);
+			controller.getAuthor({ params: { id: id } });
+			authorMock.verify();
+		});
+
+		it('should reply with a 404 if no id and no auth', function() {
+			var request = { reply: sinon.spy(), params: { }, auth: { isAuthenticated: false } };
+			controller.getAuthor(request);
+			var err = Hapi.error.notFound();
+			assert(request.reply.args[0][0].payload === err.payload);
+			assert(request.reply.args[0][0].response.code === err.response.code);
+		});
+
+		it('should reply with credentials if authenticated and given no id', function() {
+			var request = { reply: sinon.spy(), params: { }, auth: { isAuthenticated: true, credentials: { email: "test@test.com" } } };
+			controller.getAuthor(request);
+			assert(request.reply.calledOnce);
+			assert(request.reply.args[0][0].email = request.auth.credentials.email);
+		});
+
 	});
 
 	describe('createPage', function() {

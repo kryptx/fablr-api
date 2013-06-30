@@ -28,6 +28,10 @@ exports.routes = [
 		validate: { path: { id: validator.mongoid.required() } } }
 	},
 
+	{ method: 'GET', path: '/author', config: {
+		handler: crudController.getAuthor }
+	},
+
 	{ method: 'PUT', path: '/story', config: {
 		handler: crudController.createStory,
 		payload: 'parse',
