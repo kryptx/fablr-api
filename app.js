@@ -17,7 +17,8 @@ server.auth('default', {
 	scheme: 'cookie',
 	password: config.auth.cookiePassword,
 	cookie: 'sid',
-	isSecure: false
+	isSecure: false,
+	defaultMode: 'try'
 });
 
 server.route(routes);

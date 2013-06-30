@@ -8,8 +8,7 @@ exports.routes = [
 
 	{ method: 'GET', path: '/page/{id}', config: {
 		handler: crudController.getPage,
-		validate: { path: { id: validator.mongoid.required() } },
-		auth: { mode: 'try' } }
+		validate: { path: { id: validator.mongoid.required() } } }
 	},
 
 	{ method: 'PUT', path: '/page', config: {
@@ -21,14 +20,12 @@ exports.routes = [
 
 	{ method: 'GET', path: '/story/{id}', config: {
 		handler: crudController.getStory,
-		validate: { path: { id: validator.mongoid.required() } },
-		auth: { mode: 'try' } }
+		validate: { path: { id: validator.mongoid.required() } } }
 	},
 
 	{ method: 'GET', path: '/author/{id}', config: {
 		handler: crudController.getAuthor,
-		validate: { path: { id: validator.mongoid.required() } },
-		auth: { mode: 'try' } }
+		validate: { path: { id: validator.mongoid.required() } } }
 	},
 
 	{ method: 'PUT', path: '/story', config: {
@@ -42,13 +39,11 @@ exports.routes = [
 		handler: AuthenticationController.begin,
 		validate: {
 			path: { type: Hapi.types.String().valid(['google']).required() },
-			query: { returnTo: Hapi.types.String().regex(/^http/) } },
-		auth: { mode: 'try' } }
+			query: { returnTo: Hapi.types.String().regex(/^http/) } } }
 	},
 
 	{ method: 'GET', path: '/authCallback', config: {
-		handler: AuthenticationController.authCallback,
-		auth: { mode: 'try' } }
+		handler: AuthenticationController.authCallback }
 	}
 
 ];
