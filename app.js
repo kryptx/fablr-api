@@ -1,3 +1,6 @@
+// kind of a hack:
+require('./node_modules/hapi/lib/defaults.js').state.domain = '.fablr.com';
+
 var config = require('./config/config.js'),
 	winston = require('winston'),
 	Hapi = require('hapi'),
@@ -19,6 +22,7 @@ server.auth('default', {
 	isHttpOnly: false,
 	defaultMode: 'try'
 });
+
 
 mongo.init(config.db.connectionString, function(db) {
 	ObjectSvc.db = db;
