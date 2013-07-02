@@ -1,8 +1,8 @@
 // kind of a hack:
-require('./node_modules/hapi/lib/defaults.js').state.domain = '.fablr.com';
+var config = require('./config/config.js');
+require('./node_modules/hapi/lib/defaults.js').state.domain = config.cookieDomain;
 
-var config = require('./config/config.js'),
-	winston = require('winston'),
+var winston = require('winston'),
 	Hapi = require('hapi'),
 	server = Hapi.createServer(8080, config.hapi),
 	mongo = require('./lib/mongo.js'),

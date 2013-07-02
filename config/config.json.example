@@ -1,8 +1,11 @@
 {
 	"uiUrl": "http://www.fablr.com/",
+	"cookieDomain": ".fablr.com",
 	"hapi": {
 		"cors": {
-			"origin": ["www.fablr.com", "api.fablr.com"]
+			"origin": ["http://www.fablr.com", "http://api.fablr.com", "http://dev.fablr.com"],
+			"credentials": true,
+			"additionalHeaders": [ "X-Requested-With" ]
 		}
 	},
 	"db": {
