@@ -7,35 +7,32 @@ describe('CrudController', function() {
 	var controller;
 	beforeEach(function() {
 		controller = new CrudController();
-		pageMock = sinon.mock(controller.pageSvc);
-		storyMock = sinon.mock(controller.storySvc);
-		authorMock = sinon.mock(controller.authorSvc);
 	});
 
 	describe('getPage', function() {
 		it('should invoke pageSvc.findById with the provided argument', function() {
 			var id = 'abc123';
-			pageMock.expects("findById").once().withArgs(id);
+			controller.pageSvc.findById = sinon.spy();
 			controller.getPage({ params: { id: id } });
-			pageMock.verify();
+			assert(controller.pageSvc.findById.calledWith(id));
 		});
 	});
 
 	describe('getStory', function() {
 		it('should invoke storySvc.findById with the provided argument', function() {
 			var id = 'def456';
-			storyMock.expects("findById").once().withArgs(id);
+			controller.storySvc.findById = sinon.spy();
 			controller.getStory({ params: { id: id } });
-			storyMock.verify();
+			assert(controller.storySvc.findById.calledWith(id));
 		});
 	});
 
 	describe('getAuthor', function() {
 		it('should invoke authorSvc.findById with the provided argument', function() {
 			var id = 'def456';
-			authorMock.expects("findById").once().withArgs(id);
+			controller.authorSvc.findById = sinon.spy();
 			controller.getAuthor({ params: { id: id } });
-			authorMock.verify();
+			assert(controller.authorSvc.findById.calledWith(id));
 		});
 
 		it('should reply with a 404 if no id and no auth', function() {
@@ -56,20 +53,21 @@ describe('CrudController', function() {
 	});
 
 	describe('createPage', function() {
-		it('should invoke pageSvc.create with the given payload', function() {
-			var payload = { key: "value", anotherKey: "anotherValue" };
-			pageMock.expects("create").once().withArgs(payload);
-			controller.createPage({ payload: payload });
-			pageMock.verify();
+		it('should invoke pageSvc.create', function() {
+			var payload = { story: "some-id", body: "some-text", author: "might-be-fake" };
+			controller.pageSvc.create = sinon.spy();
+			controller.createPage({ auth: { credentials: { _id: "123" } }, payload: payload });
+			assert(controller.pageSvc.create.calledOnce);
 		});
 	});
 
 	describe('createStory', function() {
-		it('should invoke storySvc.create with the given payload', function() {
-			var payload = { key: "value", anotherKey: "anotherValue" };
-			storyMock.expects("create").once().withArgs(payload);
-			controller.createStory({ payload: payload });
-			storyMock.verify();
+		it('should invoke storySvc.create with the given payload and credentials id', function() {
+			var payload = { key: "value", anotherKey: "anotherValue", author: "might-be-fake" };
+			expectedArgument.author = "123";
+			controller.storySvc.create = sinon.spy();
+			controller.createStory({ auth: { credentials: { _id: "123" } }, payload: payload });
+			controller.storySvc.create.calledWith(payload);
 		});
 	});
 

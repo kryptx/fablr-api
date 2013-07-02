@@ -11,7 +11,7 @@ exports.routes = [
 		validate: { path: { id: validator.mongoid.required() } } }
 	},
 
-	{ method: 'PUT', path: '/page', config: {
+	{ method: 'POST', path: '/page', config: {
 		handler: crudController.createPage,
 		payload: 'parse',
 		validate: { payload: validator.page },
@@ -32,10 +32,17 @@ exports.routes = [
 		handler: crudController.getAuthor }
 	},
 
-	{ method: 'PUT', path: '/story', config: {
+	{ method: 'POST', path: '/story', config: {
 		handler: crudController.createStory,
 		payload: 'parse',
 		validate: { payload: validator.story },
+		auth: true }
+	},
+
+	{ method: 'POST', path: '/option', config: {
+		handler: crudController.createOption,
+		payload: 'parse',
+		validate: { payload: validator.option },
 		auth: true }
 	},
 
