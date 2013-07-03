@@ -8,7 +8,7 @@ exports.routes = [
 
 	{ method: 'GET', path: '/page/{id}', config: {
 		handler: crudController.getPage,
-		validate: { path: { id: validator.mongoid.required() } } }
+		validate: { path: { id: validator.mongoid_required } } }
 	},
 
 	{ method: 'POST', path: '/page', config: {
@@ -25,12 +25,12 @@ exports.routes = [
 
 	{ method: 'GET', path: '/story/{id}', config: {
 		handler: crudController.getStory,
-		validate: { path: { id: validator.mongoid.required() } } }
+		validate: { path: { id: validator.mongoid_required } } }
 	},
 
 	{ method: 'GET', path: '/author/{id}', config: {
 		handler: crudController.getAuthor,
-		validate: { path: { id: validator.mongoid.required() } } }
+		validate: { path: { id: validator.mongoid_required } } }
 	},
 
 	{ method: 'GET', path: '/author', config: {
