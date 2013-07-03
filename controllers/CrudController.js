@@ -69,6 +69,7 @@ module.exports = function CrudController() {
 		var newStory = {
 			author: request.auth.credentials._id,
 			title: request.payload.title,
+			category: request.payload.category,
 			upvotes: 0,
 			downvotes: 0,
 			created: new Date().getTime()
