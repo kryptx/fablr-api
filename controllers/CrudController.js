@@ -20,7 +20,7 @@ module.exports = function CrudController() {
 		if(err) {
 			request.reply(Hapi.error.internal("Internal server error"));
 		}
-		else request.reply(Hapi.response.Generic.created(route + '/' + object._id));
+		else request.reply(Hapi.response.Obj(object, 'application/json').created(route + '/' + object._id));
 	};
 
 	this.getPage = function(request) {
@@ -47,7 +47,6 @@ module.exports = function CrudController() {
 				return self.createCallback(err);
 			}
 
-			newOption.target = pageObj._id;
 			self.pageSvc.addOption(request.payload.source, pageObj._id, request.payload.optionText, function(err) {
 				self.createCallback(err, pageObj, request, '/page');
 			});
@@ -67,10 +66,30 @@ module.exports = function CrudController() {
 	};
 
 	this.createStory = function(request) {
-		var newStory = request.payload;
-		newStory.author = request.auth.credentials._id;
+		var newStory = {
+			author: request.auth.credentials._id,
+			title: request.payload.title,
+			upvotes: 0,
+			downvotes: 0,
+			created: new Date().getTime()
+		};
+
 		self.storySvc.create(newStory, function(err, storyObj) {
-			self.createCallback(err, storyObj, request, '/story');
+			if(err) {
+				return self.createCallback(err);
+			}
+
+			var newPage = {
+				author: request.auth.credentials._id,
+				story:	storyObj._id,
+				body:	request.payload.firstPage,
+				upvotes: 0,
+				downvotes: 0,
+				created: new Date().getTime()
+			};
+			self.pageSvc.create(newPage, function(err, pageObj) {
+				self.createCallback(err, storyObj, request, '/story');
+			});
 		});
 	};
 
