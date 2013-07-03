@@ -125,3 +125,8 @@ exports.authCallback = function(hapiRequest) {
 		return hapiRequest.reply(Hapi.error.internal("Internal server error"));
 	}
 };
+
+exports.logout = function(hapiRequest) {
+	hapiRequest.auth.session.clear();
+	doRedirect(hapiRequest, config.uiUrl);
+}

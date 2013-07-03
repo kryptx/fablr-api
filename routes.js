@@ -55,6 +55,10 @@ exports.routes = [
 
 	{ method: 'GET', path: '/authCallback', config: {
 		handler: AuthenticationController.authCallback }
+	},
+
+	{ method: 'GET', path: '/logout', config: {
+		handler: AuthenticationController.logout }
 	}
 
 ];
