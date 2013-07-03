@@ -64,7 +64,6 @@ describe('CrudController', function() {
 	describe('createStory', function() {
 		it('should invoke storySvc.create with the given payload and credentials id', function() {
 			var payload = { key: "value", anotherKey: "anotherValue", author: "might-be-fake" };
-			expectedArgument.author = "123";
 			controller.storySvc.create = sinon.spy();
 			controller.createStory({ auth: { credentials: { _id: "123" } }, payload: payload });
 			controller.storySvc.create.calledWith(payload);
