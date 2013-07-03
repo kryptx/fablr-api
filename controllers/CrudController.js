@@ -1,5 +1,6 @@
 var ObjectSvc = require('../lib/ObjectSvc.js'),
 	PageSvc = require('../lib/PageSvc.js'),
+	StorySvc = require('../lib/StorySvc.js'),
 	// logger = require('winston').loggers.get('default'),
 	Hapi = require('hapi');
 
@@ -7,7 +8,7 @@ module.exports = function CrudController() {
 
 	var self = this;
 	this.pageSvc = new PageSvc();
-	this.storySvc = new ObjectSvc('story');
+	this.storySvc = new StorySvc();
 	this.authorSvc = new ObjectSvc('author');
 
 	this.getCallback = function(err, object, request) {
@@ -33,7 +34,7 @@ module.exports = function CrudController() {
 		// TODO: validate that this user is allowed to insert this page into this story
 		// i.e., the story exists, and is either public or this user is allowed
 		var newPage = {
-			author: request.auth.credentials._id,
+			author: request.auth.credentials,
 			story:	request.payload.story,
 			body:	request.payload.body,
 			upvotes: 0,
@@ -65,9 +66,15 @@ module.exports = function CrudController() {
 		});
 	};
 
+	this.latestStories = function(request) {
+		self.storySvc.getLatest(function(err, stories) {
+			self.getCallback(err, stories, request);
+		});
+	};
+
 	this.createStory = function(request) {
 		var newStory = {
-			author: request.auth.credentials._id,
+			author: request.auth.credentials,
 			title: request.payload.title,
 			category: request.payload.category,
 			upvotes: 0,
@@ -81,7 +88,7 @@ module.exports = function CrudController() {
 			}
 
 			var newPage = {
-				author: request.auth.credentials._id,
+				author: request.auth.credentials,
 				story:	storyObj._id,
 				body:	request.payload.firstPage,
 				upvotes: 0,

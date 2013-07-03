@@ -18,6 +18,11 @@ exports.routes = [
 		auth: true }
 	},
 
+	{ method: 'GET', path: '/story/latest', config: {
+		handler: crudController.latestStories }
+	},
+
+
 	{ method: 'GET', path: '/story/{id}', config: {
 		handler: crudController.getStory,
 		validate: { path: { id: validator.mongoid.required() } } }
@@ -38,7 +43,6 @@ exports.routes = [
 		validate: { payload: validator.story },
 		auth: true }
 	},
-
 	{ method: 'POST', path: '/option', config: {
 		handler: crudController.createOption,
 		payload: 'parse',
