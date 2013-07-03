@@ -1,6 +1,6 @@
 // kind of a hack:
 var config = require('./config/config.js');
-require('./node_modules/hapi/lib/defaults.js').state.domain = config.cookieDomain;
+// require('./node_modules/hapi/lib/defaults.js').state.domain = config.cookieDomain;
 
 var winston = require('winston'),
 	Hapi = require('hapi'),

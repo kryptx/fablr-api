@@ -59,7 +59,6 @@ exports.authCallback = function(hapiRequest) {
 	var stateParts = decodeURIComponent(hapiRequest.query.state).split('|');
 
 	logger.debug("State parts: " + stateParts);
-	logger.debug("Module state tokens: " + stateTokens.length);
 	// if they match, exchange the code for a token
 	if(stateTokens[stateParts[0]]) {
 
