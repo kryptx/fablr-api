@@ -21,7 +21,11 @@ module.exports = function CrudController() {
 		if(err) {
 			request.reply(Hapi.error.internal("Internal server error"));
 		}
-		else request.reply(Hapi.response.Obj(object, 'application/json').created(route + '/' + object._id));
+		else {
+			var response = Hapi.response.Obj(object);
+			response.created(route + '/' + object._id);
+			request.reply(response);
+		}
 	};
 
 	this.getPage = function(request) {
