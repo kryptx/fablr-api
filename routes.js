@@ -54,7 +54,7 @@ exports.routes = [
 		handler: AuthenticationController.begin,
 		validate: {
 			path: { type: Hapi.types.String().valid(['google']).required() },
-			query: { returnTo: Hapi.types.String().regex(/^http/) } } }
+			query: { returnTo: Hapi.types.String() } } } //.regex(/^http/)
 	},
 
 	{ method: 'GET', path: '/authCallback', config: {
