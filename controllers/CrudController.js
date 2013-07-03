@@ -22,7 +22,7 @@ module.exports = function CrudController() {
 			request.reply(Hapi.error.internal("Internal server error"));
 		}
 		else {
-			var response = Hapi.response.Obj(object);
+			var response = new Hapi.response.Obj(object);
 			response.created(route + '/' + object._id);
 			request.reply(response);
 		}
