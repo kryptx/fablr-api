@@ -20,8 +20,7 @@ module.exports = function CrudController() {
 	this.createCallback = function(err, object, request, route) {
 		if(err) {
 			request.reply(Hapi.error.internal("Internal server error"));
-		}
-		else {
+		} else {
 			var response = new Hapi.response.Obj(object);
 			response.created(route + '/' + object._id);
 			request.reply(response);
@@ -100,7 +99,16 @@ module.exports = function CrudController() {
 				created: new Date().getTime()
 			};
 			self.pageSvc.create(newPage, function(err, pageObj) {
-				self.createCallback(err, storyObj, request, '/story');
+				self.storySvc.setFirstPage(storyObj._id, pageObj._id, function(err, updated) {
+					if(err) {
+						self.createCallback(err);
+					} else if (!updated) {
+						self.createCallback(new Error("Could not attach first page to story!"));
+					} else {
+						storyObj.firstPage = pageObj._id;
+						self.createCallback(err, storyObj, request, '/story');
+					}
+				})
 			});
 		});
 	};
